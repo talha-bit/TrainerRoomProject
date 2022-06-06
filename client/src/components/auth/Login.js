@@ -21,13 +21,14 @@ class Login extends Component {
   }
 
   componentDidMount() {
-    if (this.props.history.location.pathname === "/login")
+    const pathName = this.props.history.location.pathname
+    if (pathName === "/login" || pathName === "/Login")
       this.setState({userType: "Customer"})
 
-    if (this.props.history.location.pathname === "/admin")
+    if (pathName === "/admin" || pathName === "/Admin")
       this.setState({userType: "Admin"})
 
-    if (this.props.history.location.pathname === "/trainer")
+    if (pathName === "/trainer" || pathName === "/Trainer")
       this.setState({userType: "Trainer"})
 
     // If logged in and user navigates to Login page, should redirect them to dashboard
