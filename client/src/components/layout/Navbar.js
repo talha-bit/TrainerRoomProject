@@ -7,7 +7,7 @@ class Navbar extends Component {
     return (
       <div className="navbar-fixed " >
         <nav className="z-depth-2 " style={{height: '80px'}}>
-          <div className="nav-wrapper white" style={{backgroundColor: '#2979ff'}}>
+          <div className="nav-wrapper white">
             <Link
               to="/"
               style={{

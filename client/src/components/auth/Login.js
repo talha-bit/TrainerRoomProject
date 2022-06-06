@@ -16,11 +16,20 @@ class Login extends Component {
       email: "",
       password: "",
       errors: {},
-      userType: "Customer"
+      userType: ""
     };
   }
 
   componentDidMount() {
+    if (this.props.history.location.pathname === "/login")
+      this.setState({userType: "Customer"})
+
+    if (this.props.history.location.pathname === "/admin")
+      this.setState({userType: "Admin"})
+
+    if (this.props.history.location.pathname === "/trainer")
+      this.setState({userType: "Trainer"})
+
     // If logged in and user navigates to Login page, should redirect them to dashboard
     if (this.props.auth.isAuthenticated) {
       this.props.history.push("/dashboard");
@@ -74,31 +83,6 @@ class Login extends Component {
                 Don't have an account? <Link to="/register">Register</Link>
               </p>
             </div>
-            <Tab.Container id="userType" defaultActiveKey="first">
-              <Row>
-                <Col sm={true}>
-                  <Nav variant="pills" className="flex-row center">
-                    <Nav.Item className="w-100">
-                      <Nav.Link onClick={(e) => {this.setState({"userType": "Customer"})}} eventKey="first">Customer</Nav.Link>
-                    </Nav.Item>
-                  </Nav>
-                </Col>
-                <Col sm={true}>
-                  <Nav variant="pills" className="flex-row center">
-                    <Nav.Item className="w-100">
-                      <Nav.Link onClick={() => {this.setState({"userType": "Trainer"})}} eventKey="second">Trainer</Nav.Link>
-                    </Nav.Item>
-                  </Nav>
-                </Col>
-                <Col sm={true}>
-                  <Nav variant="pills" className="flex-row center">
-                    <Nav.Item className="w-100">
-                      <Nav.Link onClick={() => {this.setState({"userType": "Admin"})}}  eventKey="third">Admin</Nav.Link>
-                    </Nav.Item>
-                  </Nav>
-                </Col>
-              </Row>
-            </Tab.Container>
             <form noValidate onSubmit={this.onSubmit}>
               <div className="input-field col s12">
                 <input

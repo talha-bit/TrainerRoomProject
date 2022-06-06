@@ -1,16 +1,27 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
+const cors = require("cors");
+
 const passport = require("passport");
 
 const users = require("./routes/api/users");
 
 const app = express();
 
+const corsOptions ={
+    origin:'*',
+    credentials:true,            //access-control-allow-credentials:true
+    optionSuccessStatus:200,
+}
+
+app.use(cors(corsOptions)) // Use this after the variable declaration
+
 // Bodyparser middleware
 app.use(
   bodyParser.urlencoded({
-    extended: false
+    extended: false,
+    useUnifiedTopology: true
   })
 );
 app.use(bodyParser.json());
