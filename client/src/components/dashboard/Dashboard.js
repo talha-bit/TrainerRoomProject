@@ -14,6 +14,16 @@ class Dashboard extends Component {
         this.props.history.push('/admin/users');
     }
 
+    onViewProfile = e => {
+        e.preventDefault()
+        this.props.history.push({
+            pathname: `/profile/${this.props.auth.user.id}`,
+            state: {
+                user: this.props.auth.user
+            }
+        });
+    }
+
     render() {
         const {user} = this.props.auth;
 
@@ -53,11 +63,25 @@ class Dashboard extends Component {
                             >
                                 View Users
                             </button>}
+                        {user.userType === "Customer" &&
+                            <button
+                                style={{
+                                    width: "200px",
+                                    borderRadius: "3px",
+                                    letterSpacing: "1.5px",
+                                    marginTop: "1rem"
+                                }}
+                                onClick={this.onViewProfile}
+                                className="btn btn-large ms-lg-3 waves-effect waves-light hoverable blue accent-3"
+                            >
+                                View Profile
+                            </button>}
                     </div>
                 </div>
             </div>
         );
     }
+
 }
 
 Dashboard.propTypes = {

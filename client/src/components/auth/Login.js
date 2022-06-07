@@ -1,13 +1,9 @@
-import React, { Component } from "react";
-import { Link } from "react-router-dom";
+import React, {Component} from "react";
+import {Link} from "react-router-dom";
 import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { loginUser } from "../../actions/authActions";
+import {connect} from "react-redux";
+import {loginUser} from "../../actions/authActions";
 import classnames from "classnames";
-import Nav from 'react-bootstrap/Nav'
-import Row from 'react-bootstrap/Row'
-import Col from 'react-bootstrap/Col'
-import Tab from 'react-bootstrap/Tab'
 
 class Login extends Component {
   constructor() {
@@ -78,7 +74,7 @@ class Login extends Component {
             </Link>
             <div className="col s12" style={{ paddingLeft: "11.250px" }}>
               <h4>
-                <b>Login</b> below
+                <b>Login</b> below {this.props.history.location.pathname === "/admin" && 'as admin'}
               </h4>
               <p className="grey-text text-darken-1">
                 Don't have an account? <Link to="/register">Register</Link>

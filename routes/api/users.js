@@ -3,7 +3,6 @@ const router = express.Router();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const keys = require("../../config/keys");
-const passport = require("passport");
 
 // Load input validation
 const validateRegisterInput = require("../../validation/register");
@@ -24,6 +23,18 @@ router.get("/getCustomers", (req, res) => {
         }
     });
 });
+
+// Request to return one customer in the database
+router.post("/getCustomer", (req, res) => {
+    Customer.findById(req.body.id).then((customer) => {
+        if (customer) {
+            res.json({customer: customer})
+        } else {
+            res.status(400).json();
+        }
+    });
+});
+
 // Request to return all the trainers in the database
 router.get("/getTrainers", (req, res) => {
     Trainer.find().then((trainers) => {
@@ -61,6 +72,33 @@ router.post("/deleteTrainer", (req, res) => {
         })
 });
 
+router.post("/resetPassword", (req, res) => {
+
+    const {id, oldPassword, newPassword, cNewPassword} = req.body
+
+    Customer.findById(id)
+        .then((customer) => {
+            bcrypt.compare(oldPassword, customer.password)
+                .then(result => {
+                    if (result) {
+                        bcrypt.genSalt(10, (err, salt) => {
+                            bcrypt.hash(newPassword, salt, (err, hash) => {
+                                if (err) throw err;
+                                Customer.updateOne({_id: id}, {password: hash})
+                                    .then((isSuccess) => {
+                                        res.json(isSuccess)
+                                    })
+                                    .catch((err) => console.log(err));
+                            });
+                        });
+                    } else {
+                        console.log("Password does not match")
+                        res.json({error: "Old password does not match"})
+                    }
+                })
+        })
+})
+
 // @route POST api/users/register
 // @desc Register user
 // @access Public
@@ -78,9 +116,7 @@ router.post("/register", (req, res) => {
             return res.status(400).json({email: "Email already exists"});
         } else {
             const newCustomer = new Customer({
-                name: req.body.name,
-                email: req.body.email,
-                password: req.body.password,
+                name: req.body.name, email: req.body.email, password: req.body.password,
             });
 
             // Hash password before saving in database
@@ -130,25 +166,17 @@ router.post("/login", (req, res) => {
                         // customer matched
                         // Create JWT Payload
                         const payload = {
-                            id: customer.id,
-                            name: customer.name,
-                            userType: "Customer"
+                            id: customer.id, name: customer.name, userType: "Customer"
                         };
 
                         // Sign token
-                        jwt.sign(
-                            payload,
-                            keys.secretOrKey,
-                            {
-                                expiresIn: 31556926, // 1 year in seconds
-                            },
-                            (err, token) => {
-                                res.json({
-                                    success: true,
-                                    token: "Bearer " + token,
-                                });
-                            }
-                        );
+                        jwt.sign(payload, keys.secretOrKey, {
+                            expiresIn: 31556926, // 1 year in seconds
+                        }, (err, token) => {
+                            res.json({
+                                success: true, token: "Bearer " + token,
+                            });
+                        });
                     } else {
                         return res
                             .status(400)
@@ -171,25 +199,17 @@ router.post("/login", (req, res) => {
                         // trainer matched
                         // Create JWT Payload
                         const payload = {
-                            id: trainer.id,
-                            name: trainer.name,
-                            userType: "Trainer"
+                            id: trainer.id, name: trainer.name, userType: "Trainer"
                         };
 
                         // Sign token
-                        jwt.sign(
-                            payload,
-                            keys.secretOrKey,
-                            {
-                                expiresIn: 31556926, // 1 year in seconds
-                            },
-                            (err, token) => {
-                                res.json({
-                                    success: true,
-                                    token: "Bearer " + token,
-                                });
-                            }
-                        );
+                        jwt.sign(payload, keys.secretOrKey, {
+                            expiresIn: 31556926, // 1 year in seconds
+                        }, (err, token) => {
+                            res.json({
+                                success: true, token: "Bearer " + token,
+                            });
+                        });
                     } else {
                         return res
                             .status(400)
@@ -212,25 +232,17 @@ router.post("/login", (req, res) => {
                         // admin matched
                         // Create JWT Payload
                         const payload = {
-                            id: admin.id,
-                            name: admin.name,
-                            userType: "Admin"
+                            id: admin.id, name: admin.name, userType: "Admin"
                         };
 
                         // Sign token
-                        jwt.sign(
-                            payload,
-                            keys.secretOrKey,
-                            {
-                                expiresIn: 31556926, // 1 year in seconds
-                            },
-                            (err, token) => {
-                                res.json({
-                                    success: true,
-                                    token: "Bearer " + token,
-                                });
-                            }
-                        );
+                        jwt.sign(payload, keys.secretOrKey, {
+                            expiresIn: 31556926, // 1 year in seconds
+                        }, (err, token) => {
+                            res.json({
+                                success: true, token: "Bearer " + token,
+                            });
+                        });
                     } else {
                         return res
                             .status(400)
