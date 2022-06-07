@@ -13,6 +13,51 @@ const Customer = require("../../models/Customer");
 const Trainer = require("../../models/Trainer");
 const Admin = require("../../models/Admin");
 
+router.get("/getClasses", (req, res) => {
+    const classes = [
+        {id: 1, name: "Leg Training", description: "Come and join me for an amazing leg day!"},
+        {id: 2, name: "Chest Training", description: "Chests!"},
+        {id: 3, name: "Biceps Training", description: "Squeeze 'em out!"},
+    ]
+    res.json({classes: classes})
+})
+
+function findId(classes, id) {
+    return new Promise((resolve, reject) => {
+        for (let i = 0; i < classes.length; i++) {
+            if (id.equals(classes[i]._id)) {
+                resolve(true);
+                break;
+            }
+        }
+        reject();
+    });
+}
+
+router.post("/joinClass", (req, res) => {
+
+    const {user, classToJoin} = req.body
+
+    Customer.findById(user.id)
+        .then(customer => {
+            if (customer) {
+                // findId(customer.classes, classToJoin.id)
+                //     .then((isJoined) => {
+                //         if (isJoined) {
+                //             res.json({code: "Class already joined."})
+                //         }
+                //     })
+                //     .catch(() => {
+                Customer.updateOne({_id: user.id},
+                    {$push: {classes: classToJoin.id}})
+                    .then(() => {
+                        res.json({code: "Class joined successfully."})
+                        // })
+                    })
+            }
+        })
+})
+
 // Request to return all the customers in the database
 router.get("/getCustomers", (req, res) => {
     Customer.find().then((customers) => {
@@ -74,7 +119,7 @@ router.post("/deleteTrainer", (req, res) => {
 
 router.post("/resetPassword", (req, res) => {
 
-    const {id, oldPassword, newPassword, cNewPassword} = req.body
+    const {id, oldPassword, newPassword} = req.body
 
     Customer.findById(id)
         .then((customer) => {
