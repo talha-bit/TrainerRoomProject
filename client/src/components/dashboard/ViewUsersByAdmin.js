@@ -11,8 +11,14 @@ const ViewUsersByAdmin = () => {
     const [trainers, setTrainers] = useState([]);
     const [trainerToBeRemoved, setTrainerToBeRemoved] = useState();
 
-    const removeHandler = (customer) => {
-        customer.userType === "Customer" ? setCustomerToBeRemoved(customer._id) : setTrainerToBeRemoved(customer._id)
+    const removeCustomerHandler = (customer) => {
+        console.log(customer)
+        setCustomerToBeRemoved(customer._id)
+    }
+
+    const removeTrainerHandler = (trainer) => {
+        console.log(trainer)
+        setTrainerToBeRemoved(trainer._id)
     }
 
     useEffect(() => {
@@ -28,14 +34,6 @@ const ViewUsersByAdmin = () => {
             })
             .catch(err => console.error(err));
     }, []);
-
-    useEffect(() => {
-        console.log("Customers: ", customers)
-    }, [customers])
-
-    useEffect(() => {
-        console.log("Trainers: ", trainers)
-    }, [trainers])
 
     useEffect(() => {
         axios.post('http://localhost:5000/api/users/deleteCustomer', {toBeRemoved: customerToBeRemoved})
@@ -59,17 +57,17 @@ const ViewUsersByAdmin = () => {
             {customers.length === 0 ? <h3> There are no customers </h3> : <div>
                 <h2 style={{color: "#062a59"}} className="m-lg-4 fw-bold"> Customers </h2>
                 <div className="landing-copy col s12 center-align mt-5">
-                    <UserList removeHandler={removeHandler} users={customers}/>
+                    <UserList removeHandler={removeCustomerHandler} users={customers}/>
                 </div>
             </div>}
 
         </div>
-        <div className="row mt-5" >
+        <div className="row mt-5">
 
             {trainers.length === 0 ? <h3> There are no trainers </h3> : <div>
                 <h2 style={{color: "#062a59"}} className="m-lg-4 fw-bold"> Trainers </h2>
                 <div className="landing-copy col s12 center-align mt-5">
-                    <UserList removeHandler={removeHandler} users={trainers}/>
+                    <UserList removeHandler={removeTrainerHandler} users={trainers}/>
                 </div>
             </div>}
 

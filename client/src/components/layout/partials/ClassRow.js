@@ -16,8 +16,8 @@ const ClassesList = (props) => {
                     <Card.Text style={{color: '#bbb8b8'}}>
                         {props.c.description}
                     </Card.Text>
-                    <Button onClick={handler} variant="primary">Join</Button>
                 </Card.Body>
+                <Button onClick={handler} className="m-lg-3 green" >Join</Button>
             </Card>
         </>
     )
